@@ -18,7 +18,7 @@ export const useGameStore = defineStore('game', () => {
 
   function startGame() {
     isGameActive.value = true;
-    timeLeft.value = 10;
+    timeLeft.value = 60;
     score.value = 0;
   }
 
