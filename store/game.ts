@@ -18,7 +18,7 @@ export const useGameStore = defineStore('game', () => {
 
   function startGame() {
     isGameActive.value = true;
-    timeLeft.value = 60;
+    timeLeft.value = 10;
     score.value = 0;
   }
 
@@ -28,9 +28,9 @@ export const useGameStore = defineStore('game', () => {
     // Отправляем запрос на сервер с результатами игры
     if (playerName.value && process.client) {
       try {
-        fetch(`/api/log?name=${encodeURIComponent(playerName.value)}&score=${score.value}`, {
-          method: 'GET',
-        });
+        setTimeout(() => {
+          location.reload() 
+        }, 1500)
       } catch (error) {
         console.error('Ошибка при отправке результатов:', error);
       }
