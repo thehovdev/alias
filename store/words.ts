@@ -75,7 +75,7 @@ export const useWordsStore = defineStore('words', {
           description: 'Vaxtı ölçən cihaz',
           options: ['Kompas', 'Termometr', 'Saat', 'Barometr'],
         },
-      ]
+      ].sort(() => Math.random() - 0.5);
     },
     nextWord() {
       if (this.currentWordIndex < this.words.length - 1) {

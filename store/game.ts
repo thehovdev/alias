@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 export const useGameStore = defineStore('game', {
   state: () => ({
     score: 0,
+    playerName: '',
     timeLeft: 60, // 60 секунд = 1 минута
     isGameActive: false,
   }),
@@ -20,6 +21,17 @@ export const useGameStore = defineStore('game', {
     },
     endGame() {
       this.isGameActive = false;
+
+      // Отправляем запрос на сервер с результатами игры
+      if (this.playerName) {
+        try {
+          fetch(`/api/log?name=${encodeURIComponent(this.playerName)}&score=${this.score}`, {
+            method: 'GET',
+          });
+        } catch (error) {
+          console.error('Ошибка при отправке результатов:', error);
+        }
+      }
     },
     decrementTime() {
       if (this.timeLeft > 0) {
@@ -28,6 +40,9 @@ export const useGameStore = defineStore('game', {
       if (this.timeLeft === 0) {
         this.endGame();
       }
+    },
+    setPlayerName(name: string) {
+      this.playerName = name;
     },
   },
 });

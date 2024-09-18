@@ -1,10 +1,30 @@
 <template>
-  <div class="alias-game max-w-md mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4 text-center">təsvirdən sözü təxmin et</h2>
+  <div class="alias-game max-w-md mx-auto p-1">
+    <!-- <h2 class="text-2xl font-bold mb-4 text-center">təsvirdən sözü təxmin et</h2> -->
     <div v-if="!gameStore.isGameActive" class="text-center">
-      <button @click="startGame" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-        Oyuna başla
-      </button>
+      <div v-if="!gameStore.playerName" class="mb-4">
+        <input 
+          v-model="playerName" 
+          placeholder="Adınızı daxil edin" 
+          class="border rounded py-2 px-3 w-full mb-2"
+          @keyup.enter="setPlayerName"
+        />
+        <button 
+          @click="setPlayerName" 
+          class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Təsdiq et
+        </button>
+      </div>
+      <div v-else>
+        <p class="mb-2">Xoş gəldiniz, {{ gameStore.playerName }}!</p>
+        <button 
+          @click="startGame" 
+          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Oyuna başla
+        </button>
+      </div>
     </div>
     <div v-else>
       <div class="text-center mb-4">
@@ -12,7 +32,7 @@
       </div>
       <div v-if="currentWord" class="bg-white shadow-md rounded-lg p-6">
         <p class="text-lg mb-4">{{ currentWord.description }}</p>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-2">
           <button
             v-for="option in currentWord.options"
             :key="option"
@@ -40,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useWordsStore } from '~/store/words'
 import { useGameStore } from '~/store/game'
 
@@ -49,18 +69,27 @@ const gameStore = useGameStore()
 
 const currentWord = computed(() => wordsStore.currentWord)
 const selectedOption = ref<string | null>(null)
+const playerName = ref('')
 
 let timer: number | null = null
 
+function setPlayerName() {
+  if (playerName.value.trim()) {
+    gameStore.setPlayerName(playerName.value.trim())
+  }
+}
+
 function startGame() {
-  gameStore.startGame()
-  wordsStore.fetchWords()
-  timer = setInterval(() => {
-    gameStore.decrementTime()
-    if (gameStore.timeLeft === 0) {
-      clearInterval(timer!)
-    }
-  }, 1000)
+  if (gameStore.playerName) {
+    gameStore.startGame()
+    wordsStore.fetchWords()
+    timer = setInterval(() => {
+      gameStore.decrementTime()
+      if (gameStore.timeLeft === 0) {
+        clearInterval(timer!)
+      }
+    }, 1000)
+  }
 }
 
 function checkAnswer(option: string) {
