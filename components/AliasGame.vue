@@ -3,24 +3,22 @@
     <!-- <h2 class="text-2xl font-bold mb-4 text-center">təsvirdən sözü təxmin et</h2> -->
     <div v-if="!gameStore.isGameActive" class="text-center">
       <div v-if="!gameStore.playerName" class="mb-4">
-        <input 
-          v-model="playerName" 
+        <input
+          v-model.trim="name" 
           placeholder="Adınızı daxil edin" 
           class="border rounded py-2 px-3 w-full mb-2"
-          @keyup.enter="setPlayerName"
         />
         <button 
-          @click="setPlayerName" 
-          class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+          @click="playerName = name"
+          class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full"
         >
           Təsdiq et
         </button>
       </div>
       <div v-else>
-        <p class="mb-2">Xoş gəldiniz, {{ gameStore.playerName }}!</p>
         <button 
           @click="startGame" 
-          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full"
         >
           Oyuna başla
         </button>
@@ -66,18 +64,15 @@ import { useGameStore } from '~/store/game'
 
 const wordsStore = useWordsStore()
 const gameStore = useGameStore()
+const { playerName } = storeToRefs(gameStore)
+
 
 const currentWord = computed(() => wordsStore.currentWord)
 const selectedOption = ref<string | null>(null)
-const playerName = ref('')
+const name = ref('') 
 
 let timer: number | null = null
 
-function setPlayerName() {
-  if (playerName.value.trim()) {
-    gameStore.setPlayerName(playerName.value.trim())
-  }
-}
 
 function startGame() {
   if (gameStore.playerName) {
@@ -107,6 +102,10 @@ function checkAnswer(option: string) {
 
 watch(() => wordsStore.currentWordIndex, () => {
   selectedOption.value = null
+})
+
+onMounted(() => {
+  name.value = playerName.value || ''
 })
 
 onUnmounted(() => {
