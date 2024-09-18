@@ -31,7 +31,6 @@ export const useGameStore = defineStore('game', () => {
         fetch(`/api/log?name=${encodeURIComponent(playerName.value)}&score=${score.value}`, {
           method: 'GET',
         });
-        window.location.reload();
       } catch (error) {
         console.error('Ошибка при отправке результатов:', error);
       }
