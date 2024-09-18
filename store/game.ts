@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
 
 export const useGameStore = defineStore('game', () => {
+  const key = ref(1)
   const score = ref(0);
   const playerName = useLocalStorage('playerName', localStorage.getItem('playerName') || '');
   const timeLeft = ref(60); // 60 секунд = 1 минута
@@ -28,10 +29,15 @@ export const useGameStore = defineStore('game', () => {
     // Отправляем запрос на сервер с результатами игры
     if (playerName.value && process.client) {
       try {
-        setTimeout(() => {
-          location.reload() 
-        }, 1500)
-      } catch (error) {
+          fetch(`/api/log?name=${encodeURIComponent(playerName.value)}&score=${score.value}`, {
+            method: 'GET',
+          });
+
+         setTimeout(() => {
+          key.value++
+         }, 3000)
+          
+        } catch (error) {
         console.error('Ошибка при отправке результатов:', error);
       }
     }
@@ -54,6 +60,7 @@ export const useGameStore = defineStore('game', () => {
   }
 
   return {
+    key,
     score,
     playerName,
     timeLeft,

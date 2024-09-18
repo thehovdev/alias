@@ -9,7 +9,7 @@
         {{ playerName }}
          / Hesab: {{ score }}
         </p>
-        <Leaderboard />
+        <Leaderboard :key="gameStore.key" />
       </div>
     </div>
   </div>
