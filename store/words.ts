@@ -10,13 +10,18 @@ export const useWordsStore = defineStore('words', {
   }),
   actions: {
     async fetchWords() {
-      this.words = words.sort(() => Math.random() - 0.5)
+      const shuffledWords = [...words]
+      for (let i = shuffledWords.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]]
+      }
+      this.words = shuffledWords
     },
     nextWord() {
       if (this.currentWordIndex < this.words.length - 1) {
         this.currentWordIndex++
       }
-    },
+    }
   },
   getters: {
     currentWord: (state) => state.words[state.currentWordIndex],

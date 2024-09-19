@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
-
+import { useWordsStore } from './words';
 export const useGameStore = defineStore('game', () => {
   const key = ref(1)
   const score = ref(0);
   const playerName = useLocalStorage('playerName', localStorage.getItem('playerName') || '');
   const timeLeft = ref(60); // 60 секунд = 1 минута
   const isGameActive = ref(false);
+  const words = useWordsStore()
 
   function incrementScore() {
     score.value++;
